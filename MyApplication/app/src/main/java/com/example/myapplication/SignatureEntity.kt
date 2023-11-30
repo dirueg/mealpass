@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Entity
+@Entity(tableName = "signature_database")
 data class SignatureEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val userName: String,

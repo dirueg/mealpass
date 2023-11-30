@@ -7,14 +7,16 @@ import androidx.room.InvalidationTracker
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
+import kotlinx.coroutines.CoroutineScope
 
 @Database(entities = [SignatureEntity::class], version = 1)
-class SignatureDatabase : RoomDatabase() {
+abstract class SignatureDatabase : RoomDatabase() {
+    abstract fun signatureDao(): SignatureDao
     companion object {
         @Volatile
         private var INSTANCE: SignatureDatabase? = null
 
-        fun getDatabase(context: Context): SignatureDatabase {
+        fun getDatabase(context: Context, scope: CoroutineScope): SignatureDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
@@ -25,21 +27,5 @@ class SignatureDatabase : RoomDatabase() {
                 instance
             }
         }
-    }
-
-    override fun clearAllTables() {
-        TODO("Not yet implemented")
-    }
-
-    override fun createInvalidationTracker(): InvalidationTracker {
-        TODO("Not yet implemented")
-    }
-
-    override fun createOpenHelper(config: DatabaseConfiguration): SupportSQLiteOpenHelper {
-        TODO("Not yet implemented")
-    }
-
-    fun signatureDao(): SignatureDao {
-        return TODO("Provide the return value")
     }
 }

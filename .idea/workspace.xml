@@ -4,19 +4,96 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1fa07bbd-bb12-47f9-9d7f-90ca99f33706" name="Changes" comment="" />
+    <list default="true" id="1fa07bbd-bb12-47f9-9d7f-90ca99f33706" name="Changes" comment="init project">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/mealpass.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/.idea/.name" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/.idea/easycode/codebase-v2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/.idea/kotlinc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/proguard-rules.pro" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/androidTest/java/com/example/myapplication/ExampleInstrumentedTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/MainActivity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/SignatureDao.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/SignatureDatabase.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/SignatureEntity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/data/LoginDataSource.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/data/LoginRepository.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/data/Result.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/data/model/LoggedInUser.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/list.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/manager_page.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/ui/CalendarFragment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/ui/ListFragment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/java/com/example/myapplication/ui/SettingFragment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/drawable/ic_launcher_background.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/drawable/ic_launcher_foreground.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/layout/activity_manager_page.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/layout/calendar_fragment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/layout/dialog_password.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/layout/list_fragment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/layout/setting_fragment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-anydpi/ic_launcher.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-anydpi/ic_launcher_round.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-hdpi/ic_launcher.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-mdpi/ic_launcher.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-xhdpi/ic_launcher.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/values-land/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/values-night/themes.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/values-w1240dp/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/values-w600dp/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/values/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/values/themes.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/xml/backup_rules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/main/res/xml/data_extraction_rules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/app/src/test/java/com/example/myapplication/ExampleUnitTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyApplication/settings.gradle.kts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="a3a3ae45-a235-42f8-8ed8-473a186e68d6" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2Ytm7IX5UWTviXFYn9C7949CesQ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -26,9 +103,22 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
-    "cidr.known.project.marker": "true"
+    "cidr.known.project.marker": "true",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
+  },
+  "keyToStringList": {
+    "GitStage.ChangesTree.GroupingKeys": [
+      "directory",
+      "module",
+      "repository"
+    ]
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/MyApplication" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -38,6 +128,44 @@
       <option name="presentableId" value="Default" />
       <updated>1701353080675</updated>
     </task>
+    <task id="LOCAL-00001" summary="init project">
+      <created>1701353882123</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1701353882123</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/MyApplication" />
+    </ignored-roots>
+    <MESSAGE value="init project" />
+    <option name="LAST_COMMIT_MESSAGE" value="init project" />
   </component>
 </project>

@@ -23,6 +23,7 @@ import android.graphics.Path
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -37,6 +38,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
@@ -92,7 +94,7 @@ class MainActivity() : AppCompatActivity() {
     private lateinit var signatureView: SignatureView
     private lateinit var saveSignatureButton: Button
     private val signatureDao: SignatureDao by lazy {
-        SignatureDatabase.getDatabase(this).signatureDao()
+        SignatureDatabase.getDatabase(this, CoroutineScope(SupervisorJob())).signatureDao()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,7 +110,7 @@ class MainActivity() : AppCompatActivity() {
         userNames.forEach { name ->
             val toggleButton = ToggleButton(this)
             toggleButton.text = name
-            toggleButton.textOn = name
+            toggleButton.textOn = "$name [선택됨]"
             toggleButton.textOff = name
             toggleContainer.addView(toggleButton)
         }
@@ -161,6 +163,7 @@ class MainActivity() : AppCompatActivity() {
         )
         CoroutineScope(Dispatchers.IO).launch {
             signatureDao.insertSignature(signatureEntity)
+            Log.d("[SaveSignature]: ", signatureEntity.userName + ", " + signatureEntity.currentDate +".."+ signatureEntity.signature)
         }
     }
 /*

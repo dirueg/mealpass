@@ -9,6 +9,6 @@ public interface SignatureDao {
     @Insert
     suspend fun insertSignature(signature: SignatureEntity)
 
-    @Query("SELECT * FROM signatureentity ORDER BY timestamp DESC")
+    @Query("SELECT * FROM signature_database ORDER BY currentDate DESC")
     fun getAllSignatures(): LiveData<List<SignatureEntity>>
 }
