@@ -76,19 +76,11 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
     private lateinit var textView: TextView
     val name = intent.getStringExtra("userName")
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-//    textView.text = "Hello, $name!"
-//    final TextView helloTextView = (TextView) findViewById(R.id.text_view_id);
-//    helloTextView.setText(R.string.user_greeting);
+
     private val signatureDao: SignatureDao by lazy {
         SignatureDatabase.getDatabase(this, CoroutineScope(SupervisorJob())).signatureDao()
     }
-    //@Override
-//    protected void onCreate(Bundle savedInstanceState){
-//        super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        setContentView(R.layout.popup);
-//
-//    }
+
     private fun saveSignature() {
         setContentView(R.layout.popup)
         val bitmap = signatureView.getSignatureBitmap()
@@ -114,7 +106,6 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
         super.onCreate(savedInstanceState)
         setContentView(R.layout.popup)
 
-
         signatureView = findViewById(R.id.signatureView)
         saveSignatureButton = findViewById(R.id.saveSignatureButton)
         saveSignatureButton.setOnClickListener {
@@ -122,7 +113,6 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
             saveSignature()
         }
     }
-
 
     fun clear() {
         signatureView.clear()

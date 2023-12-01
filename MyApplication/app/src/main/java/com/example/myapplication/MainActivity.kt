@@ -10,20 +10,10 @@ import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.ui.SignatureView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-
-class PopupActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.popup)
-
-        val name = intent.getStringExtra("userName")
-    }
-}
 
 class MainActivity() : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +32,7 @@ class MainActivity() : AppCompatActivity() {
             Button.text = name
             Button.textSize = 32F
             Button.setOnClickListener {
-                val intent = Intent(this, PopupActivity::class.java)
+                val intent = Intent(this, SignatureView.Popup::class.java)
                 intent.putExtra("userName", name)
                 startActivity(intent)
             }
