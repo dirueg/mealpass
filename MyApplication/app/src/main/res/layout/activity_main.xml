@@ -30,15 +30,21 @@
             android:layout_above="@+id/confirmButton"
             android:layout_below="@id/dateTextView"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            >
 
-            <LinearLayout
-                android:id="@+id/toggleContainer"
+            <GridLayout
+
+                android:id="@+id/idButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <!-- 토글 버튼이 동적으로 추가됩니다 -->
-            </LinearLayout>
+                android:layout_height="60dp"
+                android:alignmentMode="alignMargins"
+                android:columnCount="3"
+                android:orientation="horizontal"
+                android:useDefaultMargins="true"
+                android:onClick="OnPopupClick">
+                <!-- 버튼이 동적으로 추가됩니다 -->
+            </GridLayout>
         </ScrollView>
 
         <!-- 확인 버튼 -->
@@ -52,25 +58,7 @@
             android:layout_marginBottom="14dp"
             android:text="확인" />
 
-        <com.example.myapplication.SignatureView
-            android:id="@+id/signatureView"
-            android:layout_width="500dp"
-            android:layout_height="350dp"
-            android:layout_below="@id/dateTextView"
-            android:layout_alignEnd="@id/dateTextView"
-            android:layout_marginBottom="20dp"
-            android:background="@android:color/white" />
 
-        <!-- 서명 저장 버튼 -->
-
-        <Button
-            android:id="@+id/saveSignatureButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@id/signatureView"
-            android:layout_below="@id/signatureView"
-            android:gravity="center"
-            android:text="서명 저장" />
 
         <Button
             android:id="@+id/ManagerMode"

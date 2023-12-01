@@ -1,102 +1,31 @@
 package com.example.myapplication
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ScrollView
+import android.widget.EditText
+import android.widget.GridLayout
 import android.widget.TextView
-import android.widget.ToggleButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
-import android.os.Parcel
-import android.os.Parcelable
-import android.util.AttributeSet
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.widget.EditText
-import android.widget.Toast
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.Entity
-import androidx.room.Dao
-import androidx.lifecycle.LiveData
-import androidx.room.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 
 
+class PopupActivity : AppCompatActivity() {
 
-class SignatureView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
-    private var path = Path()
-    private val paint = Paint().apply {
-        isAntiAlias = true
-        color = Color.BLACK
-        style = Paint.Style.STROKE
-        strokeJoin = Paint.Join.ROUND
-        strokeCap = Paint.Cap.ROUND
-        strokeWidth = 4f
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.popup)
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        canvas.drawPath(path, paint)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                path.moveTo(event.x, event.y)
-                return true
-            }
-            MotionEvent.ACTION_MOVE -> {
-                path.lineTo(event.x, event.y)
-            }
-            else -> return false
-        }
-        postInvalidate()
-        return false
-    }
-
-    fun clear() {
-        path.reset()
-        postInvalidate()
-    }
-
-    fun getSignatureBitmap(): Bitmap {
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        draw(canvas)
-        return bitmap
+        val name = intent.getStringExtra("userName")
     }
 }
 
-
 class MainActivity() : AppCompatActivity() {
-    private lateinit var signatureView: SignatureView
-    private lateinit var saveSignatureButton: Button
-    private val signatureDao: SignatureDao by lazy {
-        SignatureDatabase.getDatabase(this, CoroutineScope(SupervisorJob())).signatureDao()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -105,14 +34,27 @@ class MainActivity() : AppCompatActivity() {
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         dateTextView.text = currentDate
 
-        val toggleContainer: LinearLayout = findViewById(R.id.toggleContainer)
+        // val idButton: GridLayout = findViewById(R.id.idButton)
+        val gridLayout: GridLayout = findViewById(R.id.idButton)
         val userNames = arrayOf("사용자1", "사용자2", "사용자3")
         userNames.forEach { name ->
-            val toggleButton = ToggleButton(this)
-            toggleButton.text = name
-            toggleButton.textOn = "$name [선택됨]"
-            toggleButton.textOff = name
-            toggleContainer.addView(toggleButton)
+            val Button = Button(this)
+            Button.text = name
+            Button.textSize = 32F
+            Button.setOnClickListener {
+                val intent = Intent(this, PopupActivity::class.java)
+                intent.putExtra("userName", name)
+                startActivity(intent)
+            }
+
+            // GridLayout.LayoutParams 설정
+            val params = GridLayout.LayoutParams()
+            params.width = 0 // 너비를 0으로 설정하여 가중치가 작동하도록 함
+            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f) // 열 가중치를 1로 설정
+            params.setMargins(8, 8, 8, 8) // 필요한 경우 마진 설정
+            Button.layoutParams = params
+            gridLayout.addView(Button, params)
+
         }
 
         val confirmButton: Button = findViewById(R.id.confirmButton)
@@ -125,11 +67,7 @@ class MainActivity() : AppCompatActivity() {
             showPasswordDialog()
         }
 
-        signatureView = findViewById(R.id.signatureView)
-        saveSignatureButton = findViewById(R.id.saveSignatureButton)
-        saveSignatureButton.setOnClickListener {
-            saveSignature()
-        }
+
     }
 
     fun showPasswordDialog() {
@@ -151,30 +89,6 @@ class MainActivity() : AppCompatActivity() {
             .show()
     }
 
-    private fun saveSignature() {
-        val bitmap = signatureView.getSignatureBitmap()
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        val byteArray = stream.toByteArray()
-        bitmap.recycle()
-        val signatureEntity = SignatureEntity(
-            userName = "User", // 괄호 추가
-            signature = byteArray
-        )
-        CoroutineScope(Dispatchers.IO).launch {
-            signatureDao.insertSignature(signatureEntity)
-            Log.d("[SaveSignature]: ", signatureEntity.userName + ", " + signatureEntity.currentDate +".."+ signatureEntity.signature)
-        }
-    }
-/*
-    companion object CREATOR : Parcelable.Creator<MainActivity> {
-        override fun createFromParcel(parcel: Parcel): MainActivity {
-            return MainActivity(parcel)
-        }
-
-        override fun newArray(size: Int): Array<MainActivity?> {
-            return arrayOfNulls(size)
-        }
-    }
- */
 }
+
+

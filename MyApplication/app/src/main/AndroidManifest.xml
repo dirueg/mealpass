@@ -16,9 +16,9 @@
             android:name=".manager_page"
             android:exported="false" />
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name="com.example.myapplication.PopupActivity"
             android:exported="false"
-            android:label="@string/title_activity_login" />
+            android:label="PopupActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true" >
