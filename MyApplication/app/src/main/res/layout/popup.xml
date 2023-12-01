@@ -5,8 +5,7 @@
     android:background="#eeeeee"
     android:orientation="vertical"
     android:layout_width="550dp"
-    android:layout_height="wrap_content"
-    tools:context=".ui.Popup">
+    android:layout_height="wrap_content">
 
 <!--    <LinearLayout-->
 <!--        android:orientation="horizontal"-->
@@ -19,7 +18,7 @@
             android:layout_height="60dp"
             android:background="#ff7a00"
             android:gravity="center"
-            android:text="@string/hello"
+            android:text="서명을 해주세요"
             android:textColor="#1B5E20"
             android:textSize="30sp" />
 

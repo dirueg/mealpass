@@ -37,4 +37,8 @@
             android:text="그 외 설정?" />
 
     </com.google.android.material.tabs.TabLayout>
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
