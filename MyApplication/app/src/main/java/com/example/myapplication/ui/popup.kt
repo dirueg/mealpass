@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-public class SignatureView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
+class SignatureView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
     private var path = Path()
     private val paint = Paint().apply {
         isAntiAlias = true
@@ -59,17 +59,18 @@ public class SignatureView(context: Context, attrs: AttributeSet? = null) : View
         postInvalidate()
         return false
     }
-    fun clear() {
-        path.reset()
-        postInvalidate()
-    }
     fun getSignatureBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         draw(canvas)
         return bitmap
     }
-public class Popup() : AppCompatActivity() {
+    fun clear() {
+        path.reset()
+        postInvalidate()
+    }
+
+ class Popup() : AppCompatActivity() {
     private lateinit var signatureView: SignatureView
     private lateinit var saveSignatureButton: Button
     private lateinit var textView: TextView
@@ -99,7 +100,7 @@ public class Popup() : AppCompatActivity() {
             userName = "User", // 괄호 추가
             signature = byteArray
         )
-        Log.e("[SaveSignature]: ", "${signatureEntity.userName}, ${signatureEntity.currentDate}, ${signatureEntity.signature.contentToString()}")
+        Log.d("[SaveSignature]: ", "${signatureEntity.userName}, ${signatureEntity.currentDate}, ${signatureEntity.signature.contentToString()}")
 
         // Log.d("[SaveSignature]: ", signatureEntity.userName + ", " + signatureEntity.currentDate +".."+ signatureEntity.signature)
 
@@ -130,46 +131,3 @@ public class Popup() : AppCompatActivity() {
 
 
 }
-/*
-public class SignatureView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
-    private var path = Path()
-    private val paint = Paint().apply {
-        isAntiAlias = true
-        color = Color.BLACK
-        style = Paint.Style.STROKE
-        strokeJoin = Paint.Join.ROUND
-        strokeCap = Paint.Cap.ROUND
-        strokeWidth = 4f
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        canvas.drawPath(path, paint)
-    }
-
- @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                path.moveTo(event.x, event.y)
-                return true
-            }
-            MotionEvent.ACTION_MOVE -> {
-                path.lineTo(event.x, event.y)
-            }
-            else -> return false
-        }
-        postInvalidate()
-        return false
-    }
-    fun clear() {
-        path.reset()
-        postInvalidate()
-    }
-    fun getSignatureBitmap(): Bitmap {
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        draw(canvas)
-        return bitmap
-    }
- */
