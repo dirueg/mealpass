@@ -24,6 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 public class SignatureView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
     private var path = Path()
@@ -66,37 +69,27 @@ public class SignatureView(context: Context, attrs: AttributeSet? = null) : View
         draw(canvas)
         return bitmap
     }
-public class Popup : AppCompatActivity() {
+public class Popup() : AppCompatActivity() {
     private lateinit var signatureView: SignatureView
     private lateinit var saveSignatureButton: Button
     private lateinit var textView: TextView
     val name = intent.getStringExtra("userName")
+    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 //    textView.text = "Hello, $name!"
 //    final TextView helloTextView = (TextView) findViewById(R.id.text_view_id);
 //    helloTextView.setText(R.string.user_greeting);
     private val signatureDao: SignatureDao by lazy {
         SignatureDatabase.getDatabase(this, CoroutineScope(SupervisorJob())).signatureDao()
     }
-    @Override
+    //@Override
 //    protected void onCreate(Bundle savedInstanceState){
 //        super.onCreate(savedInstanceState);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        setContentView(R.layout.popup);
 //
 //    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.popup)
-
-
-        signatureView = findViewById(R.id.signatureView)
-        saveSignatureButton = findViewById(R.id.saveSignatureButton)
-        saveSignatureButton.setOnClickListener {
-            saveSignature()
-        }
-    }
     private fun saveSignature() {
+        setContentView(R.layout.popup)
         val bitmap = signatureView.getSignatureBitmap()
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
@@ -106,23 +99,34 @@ public class Popup : AppCompatActivity() {
             userName = "User", // 괄호 추가
             signature = byteArray
         )
+        Log.e("[SaveSignature]: ", "${signatureEntity.userName}, ${signatureEntity.currentDate}, ${signatureEntity.signature.contentToString()}")
+
+        // Log.d("[SaveSignature]: ", signatureEntity.userName + ", " + signatureEntity.currentDate +".."+ signatureEntity.signature)
+
         CoroutineScope(Dispatchers.IO).launch {
             signatureDao.insertSignature(signatureEntity)
-            Log.d("[SaveSignature]: ", signatureEntity.userName + ", " + signatureEntity.currentDate +".."+ signatureEntity.signature)
+           }
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.popup)
+
+
+        signatureView = findViewById(R.id.signatureView)
+        saveSignatureButton = findViewById(R.id.saveSignatureButton)
+        saveSignatureButton.setOnClickListener {
+            Log.d("setOnClickListener", "saveSignature on")
+            saveSignature()
         }
     }
+
 
     fun clear() {
         signatureView.clear()
     }
 }
-
-
-
-
-
-
-
 
 
 }
