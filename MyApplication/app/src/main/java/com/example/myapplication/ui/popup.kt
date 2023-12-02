@@ -17,17 +17,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.DatabaseSingleton
 import com.example.myapplication.R
-import com.example.myapplication.SignatureDao
-import com.example.myapplication.SignatureDatabase
 import com.example.myapplication.SignatureEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class SignatureView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
     private var path = Path()
@@ -107,16 +101,21 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
             super.onCreate(savedInstanceState)
             setContentView(R.layout.popup)
 
+            val rootLayout = findViewById<View>(R.id.rootLayout)
+            rootLayout.setOnClickListener { finish() }
+
             userName = intent.getStringExtra("userName") ?: "Unknown" // null 처리
             signatureView = findViewById(R.id.signatureView)
             saveSignatureButton = findViewById(R.id.saveSignatureButton)
             saveSignatureButton.setOnClickListener {
                 Log.d("setOnClickListener", "saveSignature on")
                 saveSignature()
+                clear()
+                finish()
             }
         }
 
-        fun clear() {
+        private fun clear() {
             signatureView.clear()
         }
     }
