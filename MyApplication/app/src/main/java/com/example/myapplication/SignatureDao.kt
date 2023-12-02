@@ -26,5 +26,11 @@ public interface SignatureDao {
 
     @Query("SELECT * FROM signature_database WHERE currentDate BETWEEN :startDate AND :endDate")
     fun getSignaturesInRange(startDate: String, endDate: String): LiveData<List<SignatureEntity>>
+    @Query("SELECT * FROM signature_database WHERE currentDate BETWEEN :startDate AND :endDate ORDER BY currentDate")
+    fun getSignaturesSortedByDate(startDate: String, endDate: String): LiveData<List<SignatureEntity>>
+
+    @Query("SELECT * FROM signature_database WHERE currentDate BETWEEN :startDate AND :endDate ORDER BY userName")
+    fun getSignaturesSortedByName(startDate: String, endDate: String): LiveData<List<SignatureEntity>>
+
 
 }
