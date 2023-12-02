@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.room.Room
 import com.example.myapplication.ui.SignatureView
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -26,10 +25,7 @@ class MainActivity() : AppCompatActivity() {
         val dateTextView: TextView = findViewById(R.id.dateTextView)
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         dateTextView.text = currentDate
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "database-name"
-        ).build()
+        db = AppDatabase.getDatabase(applicationContext)
 
 //        val userDao = db.userDao()
 //        val users = userDao.getAll()
@@ -37,7 +33,7 @@ class MainActivity() : AppCompatActivity() {
         val gridLayout: GridLayout = findViewById(R.id.idButton)
         val userDao = db.userDao()
 
-// LiveData 관찰
+        // LiveData 관찰
         userDao.getAll().observe(this, Observer { users ->
             gridLayout.removeAllViews() // 이전 버튼 제거
             users.forEach { user ->
@@ -62,23 +58,16 @@ class MainActivity() : AppCompatActivity() {
             }
         })
 
-                val confirmButton: Button = findViewById(R.id.confirmButton)
-                confirmButton.setOnClickListener {
-                    // 버튼 클릭 시 수행할 작업
-                }
+        val confirmButton: Button = findViewById(R.id.confirmButton)
+        confirmButton.setOnClickListener {
+            // 버튼 클릭 시 수행할 작업
+        }
 
-                val managermodebutton: Button = findViewById(R.id.ManagerMode)
-                managermodebutton.setOnClickListener {
-                    showPasswordDialog()
-
-                }
-
-
-            }
-
-
-
-
+        val managermodebutton: Button = findViewById(R.id.ManagerMode)
+        managermodebutton.setOnClickListener {
+            showPasswordDialog()
+        }
+    }
 
     fun showPasswordDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null)
@@ -98,6 +87,5 @@ class MainActivity() : AppCompatActivity() {
             .setNegativeButton("취소", null)
             .show()
     }
-
 }
 
