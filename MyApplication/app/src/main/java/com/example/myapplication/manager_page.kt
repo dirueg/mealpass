@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.myapplication.ui.CalendarFragment
 import com.example.myapplication.ui.ListFragment
+import com.example.myapplication.ui.SettingFragment
 import com.google.android.material.tabs.TabLayout
 
 class manager_page : AppCompatActivity() {
@@ -30,7 +31,7 @@ class manager_page : AppCompatActivity() {
                     when (tab.position) {
                         0 -> showFragment(ListFragment())
                         1 -> showFragment(CalendarFragment())
-            //                    2 -> showFragment(SettingFragment())
+                        2 -> showFragment(SettingFragment())
                         // 다른 탭에 대한 처리
                     }
                 }
