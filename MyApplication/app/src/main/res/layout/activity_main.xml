@@ -41,8 +41,7 @@
                 android:alignmentMode="alignMargins"
                 android:columnCount="3"
                 android:orientation="horizontal"
-                android:useDefaultMargins="true"
-                android:onClick="OnPopupClick">
+                android:useDefaultMargins="true">
                 <!-- 버튼이 동적으로 추가됩니다 -->
             </GridLayout>
         </ScrollView>

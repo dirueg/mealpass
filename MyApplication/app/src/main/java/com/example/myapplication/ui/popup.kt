@@ -74,7 +74,7 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
     private lateinit var signatureView: SignatureView
     private lateinit var saveSignatureButton: Button
     private lateinit var textView: TextView
-    private lateinit var name: String
+//    private lateinit var name: String
 
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
@@ -107,7 +107,7 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
         super.onCreate(savedInstanceState)
         setContentView(R.layout.popup)
 
-        name = intent.getStringExtra("userName").toString()
+        val userName = intent.getStringExtra("userName") ?: "Unknown" // null 처리
         signatureView = findViewById(R.id.signatureView)
         saveSignatureButton = findViewById(R.id.saveSignatureButton)
         saveSignatureButton.setOnClickListener {

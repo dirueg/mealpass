@@ -42,7 +42,7 @@ class ListFragment : Fragment() {
                 namesAdapter.notifyItemInserted(namesList.size - 1)
                 nameEditText.text.clear()
             } else {
-                Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "추가하려는 직원의 이름을 먼저 적어주세요!", Toast.LENGTH_SHORT).show()
             }
         }
 
