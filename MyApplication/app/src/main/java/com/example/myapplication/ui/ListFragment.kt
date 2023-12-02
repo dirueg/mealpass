@@ -10,13 +10,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.AppDatabase
 import com.example.myapplication.R
-import com.example.myapplication.SignatureDatabase
 import com.example.myapplication.User
-import com.example.myapplication.SignatureDao
 import com.example.myapplication.UserDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,8 +30,8 @@ class ListFragment : Fragment() {
         val addNameButton: Button = view.findViewById(R.id.addNameButton)
         val nameEditText: EditText = view.findViewById(R.id.nameEditText)
 
-        val db = SignatureDatabase.getDatabase(requireContext(), viewLifecycleOwner.lifecycleScope)
-        userDao = db.UserDao()
+        val db = AppDatabase.getDatabase(requireContext())
+        userDao = db.userDao()
 
         namesAdapter = NamesAdapter { position ->
             CoroutineScope(Dispatchers.IO).launch {

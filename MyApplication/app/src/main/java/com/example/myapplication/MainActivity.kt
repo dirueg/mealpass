@@ -10,11 +10,9 @@ import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.room.Room
 import com.example.myapplication.ui.SignatureView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -37,38 +35,32 @@ class MainActivity() : AppCompatActivity() {
 //        val users = userDao.getAll()
 
         val gridLayout: GridLayout = findViewById(R.id.idButton)
-        CoroutineScope(Dispatchers.IO).launch {
-            val userDao = db.userDao()
-            val users = userDao.getAll()
-            runOnUiThread {
-                users.forEach { user ->
-                    val button = Button(this@MainActivity)
-                    button.text = user.name
-                    button.textSize = 32F
-                    button.setOnClickListener {
-                        val intent = Intent(this@MainActivity, SignatureView.Popup::class.java)
-                        intent.putExtra("userName", user.name)
-                        startActivity(intent)
-                    }
-//        users.forEach { name ->
-//            val Button = Button(this)
-//            Button.text = users.toString()
-//            Button.textSize = 32F
-//            Button.setOnClickListener {
-//                val intent = Intent(this, SignatureView.Popup::class.java)
-//                intent.putExtra("userName", name)
-//                startActivity(intent)
-//            }
+        val userDao = db.userDao()
 
-                    // GridLayout.LayoutParams 설정
-                    val params = GridLayout.LayoutParams()
-                    params.width = 0 // 너비를 0으로 설정하여 가중치가 작동하도록 함
-                    params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f) // 열 가중치를 1로 설정
-                    params.setMargins(8, 8, 8, 8) // 필요한 경우 마진 설정
-                    button.layoutParams = params
-                    gridLayout.addView(button, params)
-
+// LiveData 관찰
+        userDao.getAll().observe(this, Observer { users ->
+            gridLayout.removeAllViews() // 이전 버튼 제거
+            users.forEach { user ->
+                val button = Button(this@MainActivity)
+                button.text = user.name
+                button.textSize = 32F
+                button.setOnClickListener {
+                    val intent = Intent(this@MainActivity, SignatureView.Popup::class.java)
+                    intent.putExtra("userName", user.name)
+                    startActivity(intent)
                 }
+
+                // GridLayout.LayoutParams 설정
+                val params = GridLayout.LayoutParams()
+                params.width = GridLayout.LayoutParams.WRAP_CONTENT
+                params.height = GridLayout.LayoutParams.WRAP_CONTENT
+                params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                params.setMargins(8, 8, 8, 8)
+                button.layoutParams = params
+
+                gridLayout.addView(button, params)
+            }
+        })
 
                 val confirmButton: Button = findViewById(R.id.confirmButton)
                 confirmButton.setOnClickListener {
@@ -84,9 +76,9 @@ class MainActivity() : AppCompatActivity() {
 
             }
 
-        }
 
-    }
+
+
 
     fun showPasswordDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null)
@@ -106,9 +98,6 @@ class MainActivity() : AppCompatActivity() {
             .setNegativeButton("취소", null)
             .show()
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        db.close() // 데이터베이스 인스턴스 닫기
-    }
+
 }
 
