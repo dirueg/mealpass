@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.AppDatabase
+import com.example.myapplication.DatabaseSingleton
 import com.example.myapplication.R
 import com.example.myapplication.User
 import com.example.myapplication.UserDao
@@ -30,7 +31,7 @@ class ListFragment : Fragment() {
         val addNameButton: Button = view.findViewById(R.id.addNameButton)
         val nameEditText: EditText = view.findViewById(R.id.nameEditText)
 
-        val db = AppDatabase.getDatabase(requireContext())
+        val db = DatabaseSingleton.AppDB
         userDao = db.userDao()
 
         namesAdapter = NamesAdapter { position ->

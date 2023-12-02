@@ -19,8 +19,8 @@ interface UserDao {
 @Dao
 public interface SignatureDao {
     @Insert
-    suspend fun insertSignature(signature: SignatureEntity)
+    fun insertSignature(signature: SignatureEntity)
 
-    @Query("SELECT * FROM signature_database ORDER BY currentDate DESC")
+    @Query("SELECT * FROM signature_database")
     fun getAllSignatures(): LiveData<List<SignatureEntity>>
 }

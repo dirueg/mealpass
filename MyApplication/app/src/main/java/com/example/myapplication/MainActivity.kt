@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,21 +18,20 @@ import java.util.Date
 import java.util.Locale
 
 class MainActivity() : AppCompatActivity() {
-    private lateinit var db: AppDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Singleton init
+        DatabaseSingleton(applicationContext)
+
         val dateTextView: TextView = findViewById(R.id.dateTextView)
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         dateTextView.text = currentDate
-        db = AppDatabase.getDatabase(applicationContext)
-
-//        val userDao = db.userDao()
-//        val users = userDao.getAll()
+        val appDB = DatabaseSingleton.AppDB
 
         val gridLayout: GridLayout = findViewById(R.id.idButton)
-        val userDao = db.userDao()
+        val userDao = appDB.userDao()
 
         // LiveData 관찰
         userDao.getAll().observe(this, Observer { users ->
@@ -88,4 +88,3 @@ class MainActivity() : AppCompatActivity() {
             .show()
     }
 }
-

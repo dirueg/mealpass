@@ -34,7 +34,7 @@ abstract class SignatureDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: SignatureDatabase? = null
 
-        fun getDatabase(context: Context, scope: CoroutineScope): SignatureDatabase {
+        fun getDatabase(context: Context): SignatureDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,

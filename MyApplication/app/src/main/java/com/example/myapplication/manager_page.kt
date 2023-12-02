@@ -1,8 +1,10 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.myapplication.ui.CalendarFragment
 import com.example.myapplication.ui.ListFragment
 import com.google.android.material.tabs.TabLayout
 
@@ -18,7 +20,7 @@ class manager_page : AppCompatActivity() {
                     showFragment(ListFragment())
                     when (tab.position) {
                         0 -> showFragment(ListFragment())
-            //                        1 -> showFragment(CalendarFragment())
+                        1 -> showFragment(CalendarFragment())
             //                    2 -> showFragment(SettingFragment())
                         // 다른 탭에 대한 처리
                     }

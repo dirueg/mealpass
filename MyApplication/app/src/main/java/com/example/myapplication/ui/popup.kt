@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.DatabaseSingleton
 import com.example.myapplication.R
 import com.example.myapplication.SignatureDao
 import com.example.myapplication.SignatureDatabase
@@ -80,10 +81,6 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
         private lateinit var textView: TextView
         private lateinit var userName: String
 
-        private val signatureDao: SignatureDao by lazy {
-            SignatureDatabase.getDatabase(this, CoroutineScope(SupervisorJob())).signatureDao()
-        }
-
         private fun saveSignature() {
             setContentView(R.layout.popup)
             val bitmap = signatureView.getSignatureBitmap()
@@ -101,7 +98,8 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
             )
 
             CoroutineScope(Dispatchers.IO).launch {
-                signatureDao.insertSignature(signatureEntity)
+                DatabaseSingleton.SignDB.signatureDao().insertSignature(signatureEntity)
+                Log.d("insertSignature", signatureEntity.toString())
             }
         }
 
