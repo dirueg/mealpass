@@ -51,75 +51,75 @@ class SignatureView(context: Context, attrs: AttributeSet? = null) : View(contex
                 path.moveTo(event.x, event.y)
                 return true
             }
+
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(event.x, event.y)
             }
+
             else -> return false
         }
         postInvalidate()
         return false
     }
+
     fun getSignatureBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         draw(canvas)
         return bitmap
     }
+
     fun clear() {
         path.reset()
         postInvalidate()
     }
 
- class Popup() : AppCompatActivity() {
-    private lateinit var signatureView: SignatureView
-    private lateinit var saveSignatureButton: Button
-    private lateinit var textView: TextView
-//    private lateinit var name: String
+    class Popup() : AppCompatActivity() {
+        private lateinit var signatureView: SignatureView
+        private lateinit var saveSignatureButton: Button
+        private lateinit var textView: TextView
+        private lateinit var userName: String
 
-    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        private val signatureDao: SignatureDao by lazy {
+            SignatureDatabase.getDatabase(this, CoroutineScope(SupervisorJob())).signatureDao()
+        }
 
-    private val signatureDao: SignatureDao by lazy {
-        SignatureDatabase.getDatabase(this, CoroutineScope(SupervisorJob())).signatureDao()
-    }
+        private fun saveSignature() {
+            setContentView(R.layout.popup)
+            val bitmap = signatureView.getSignatureBitmap()
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val byteArray = stream.toByteArray()
+            bitmap.recycle()
+            val signatureEntity = SignatureEntity(
+                userName = userName,
+                signature = byteArray,
+            )
+            Log.d(
+                "[SaveSignature]: ",
+                "${signatureEntity.userName}, ${signatureEntity.currentDate}, ${signatureEntity.signature.contentToString()}"
+            )
 
-    private fun saveSignature() {
-        setContentView(R.layout.popup)
-        val bitmap = signatureView.getSignatureBitmap()
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        val byteArray = stream.toByteArray()
-        bitmap.recycle()
-        val signatureEntity = SignatureEntity(
-            userName = "User", // 괄호 추가
-            signature = byteArray
-        )
-        Log.d("[SaveSignature]: ", "${signatureEntity.userName}, ${signatureEntity.currentDate}, ${signatureEntity.signature.contentToString()}")
+            CoroutineScope(Dispatchers.IO).launch {
+                signatureDao.insertSignature(signatureEntity)
+            }
+        }
 
-        // Log.d("[SaveSignature]: ", signatureEntity.userName + ", " + signatureEntity.currentDate +".."+ signatureEntity.signature)
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.popup)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            signatureDao.insertSignature(signatureEntity)
-           }
+            userName = intent.getStringExtra("userName") ?: "Unknown" // null 처리
+            signatureView = findViewById(R.id.signatureView)
+            saveSignatureButton = findViewById(R.id.saveSignatureButton)
+            saveSignatureButton.setOnClickListener {
+                Log.d("setOnClickListener", "saveSignature on")
+                saveSignature()
+            }
+        }
 
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.popup)
-
-        val userName = intent.getStringExtra("userName") ?: "Unknown" // null 처리
-        signatureView = findViewById(R.id.signatureView)
-        saveSignatureButton = findViewById(R.id.saveSignatureButton)
-        saveSignatureButton.setOnClickListener {
-            Log.d("setOnClickListener", "saveSignature on")
-            saveSignature()
+        fun clear() {
+            signatureView.clear()
         }
     }
-
-    fun clear() {
-        signatureView.clear()
-    }
-}
-
-
 }
