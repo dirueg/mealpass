@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.example.myapplication.ui.CalendarFragment
 import com.example.myapplication.ui.ListFragment
 import com.google.android.material.tabs.TabLayout
@@ -14,6 +15,14 @@ class manager_page : AppCompatActivity() {
         setContentView(R.layout.activity_manager_page)
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
 
+
+        val db = DatabaseSingleton.SignDB
+        val dao = db.signatureDao()
+        dao.getAllSignatures().observe(this, Observer {sign ->
+            for (sg in sign){
+                Log.d("CalendarFragment", sg.userName + ", " + sg.currentDate)
+            }
+        })
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab != null) {
