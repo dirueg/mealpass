@@ -8,7 +8,7 @@ import java.util.Locale
 
 @Entity
 data class User(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "name") val name: String
 )
 @Entity(tableName = "signature_database")

@@ -9,53 +9,68 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.SignatureDatabase
+import com.example.myapplication.User
+import com.example.myapplication.SignatureDao
+import com.example.myapplication.UserDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ListFragment : Fragment() {
-
     private lateinit var namesAdapter: NamesAdapter
-    private val namesList = mutableListOf<String>()
+    private lateinit var userDao: UserDao
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.list_fragment, container, false)
-
         val namesRecyclerView: RecyclerView = view.findViewById(R.id.namesRecyclerView)
         val addNameButton: Button = view.findViewById(R.id.addNameButton)
         val nameEditText: EditText = view.findViewById(R.id.nameEditText)
 
-        namesAdapter = NamesAdapter(namesList) { position ->
-            removeName(position)
+        val db = SignatureDatabase.getDatabase(requireContext(), viewLifecycleOwner.lifecycleScope)
+        userDao = db.UserDao()
+
+        namesAdapter = NamesAdapter { position ->
+            CoroutineScope(Dispatchers.IO).launch {
+                userDao.delete(User(id = position, name = ""))
+            }
         }
 
         namesRecyclerView.layoutManager = LinearLayoutManager(context)
         namesRecyclerView.adapter = namesAdapter
 
+        userDao.getAll().observe(viewLifecycleOwner, Observer { users ->
+            namesAdapter.setUsers(users)
+        })
+
         addNameButton.setOnClickListener {
             val name = nameEditText.text.toString()
             if (name.isNotEmpty()) {
-                namesList.add(name)
-                namesAdapter.notifyItemInserted(namesList.size - 1)
+                CoroutineScope(Dispatchers.IO).launch {
+                    userDao.insert(User(name = name))
+                }
                 nameEditText.text.clear()
             } else {
-                Toast.makeText(context, "추가하려는 직원의 이름을 먼저 적어주세요!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Please enter a name to add", Toast.LENGTH_SHORT).show()
             }
         }
 
         return view
     }
-
-    private fun removeName(position: Int) {
-        namesList.removeAt(position)
-        namesAdapter.notifyItemRemoved(position)
-    }
 }
 
-class NamesAdapter(private val names: MutableList<String>, private val onItemRemoved: (Int) -> Unit) : RecyclerView.Adapter<NamesAdapter.ViewHolder>() {
+class NamesAdapter(private val onItemRemoved: (Int) -> Unit) : RecyclerView.Adapter<NamesAdapter.ViewHolder>() {
+    private var users = emptyList<User>()
+
+    fun setUsers(users: List<User>) {
+        this.users = users
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_name, parent, false)
@@ -63,20 +78,18 @@ class NamesAdapter(private val names: MutableList<String>, private val onItemRem
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(names[position])
+        holder.bind(users[position])
     }
 
-    override fun getItemCount(): Int = names.size
+    override fun getItemCount(): Int = users.size
 
     class ViewHolder(itemView: View, private val onItemRemoved: (Int) -> Unit) : RecyclerView.ViewHolder(itemView) {
-        fun bind(name: String) {
-            // 예를 들어 TextView의 ID가 itemNameTextView 라고 가정
+        fun bind(user: User) {
             val itemNameTextView: TextView = itemView.findViewById(R.id.itemNameTextView)
-            itemNameTextView.text = name
+            itemNameTextView.text = user.name
 
-            // 아이템 삭제 로직
             itemView.findViewById<Button>(R.id.deleteButton).setOnClickListener {
-                onItemRemoved(adapterPosition)
+                onItemRemoved(user.id)
             }
         }
     }

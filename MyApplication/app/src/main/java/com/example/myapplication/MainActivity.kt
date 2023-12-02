@@ -20,6 +20,7 @@ import java.util.Date
 import java.util.Locale
 
 class MainActivity() : AppCompatActivity() {
+    private lateinit var db: AppDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -84,6 +85,7 @@ class MainActivity() : AppCompatActivity() {
             }
 
         }
+
     }
 
     fun showPasswordDialog() {
@@ -104,6 +106,9 @@ class MainActivity() : AppCompatActivity() {
             .setNegativeButton("취소", null)
             .show()
     }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        db.close() // 데이터베이스 인스턴스 닫기
+    }
 }
 
