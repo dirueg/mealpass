@@ -50,8 +50,12 @@ class ListFragment : Fragment() {
         addNameButton.setOnClickListener {
             val name = nameEditText.text.toString()
             if (name.isNotEmpty()) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    userDao.insert(User(name = name))
+                if (name.contains(",")) {
+                    addManyUser(name.split(","))
+                } else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        userDao.insert(User(name = name))
+                    }
                 }
                 nameEditText.text.clear()
             } else {
@@ -60,6 +64,14 @@ class ListFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun addManyUser(users: List<String>) {
+        for (userName in users) {
+            CoroutineScope(Dispatchers.IO).launch {
+                userDao.insert(User(name = userName.trim()))
+            }
+        }
     }
 }
 
