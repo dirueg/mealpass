@@ -1,25 +1,66 @@
 package com.example.myapplication.ui
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.myapplication.DatabaseSingleton
+import com.example.myapplication.R
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
-class CalendarFragment : androidx.fragment.app.Fragment() {
-    // 여기에 캘린더 뷰 로직 및 Room 데이터베이스에서 해당 기간의 목록을 불러오는 로직 구현
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        /*
+class CalendarFragment : Fragment() {
+
+    private lateinit var startDate: String
+    private lateinit var endDate: String
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.calendar_fragment, container, false)
+
+        val calendarView = view.findViewById<CalendarView>(R.id.calendarView)
         val db = DatabaseSingleton.SignDB
         val dao = db.signatureDao()
-        dao.getAllSignatures().observe(viewLifecycleOwner, Observer {sign ->
-            for (sg in sign){
-                Log.d("CalendarFragment", sg.userName + ", " + sg.currentDate)
+
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            // 시작 날짜 선택기 표시
+            showDatePicker(year, month, dayOfMonth, "시작 날짜 선택") { start ->
+                startDate = start
+
+                // 종료 날짜 선택기 표시
+                showDatePicker(year, month, dayOfMonth, "종료 날짜 선택") { end ->
+                    endDate = end
+
+                    dao.getSignaturesInRange(startDate, endDate).observe(viewLifecycleOwner, Observer { signatures ->
+                        for (signature in signatures) {
+                            Log.d("CalendarFragment", "${signature.userName}, ${signature.currentDate}")
+                            // 추가적인 로직, 예: 서명 목록을 화면에 표시
+                        }
+                    })
+                }
             }
-        })
-         */
-        return null;
+        }
+
+        return view
+    }
+
+    private fun showDatePicker(year: Int, month: Int, dayOfMonth: Int, title: String, callback: (String) -> Unit) {
+        val datePickerDialog = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDayOfMonth ->
+            val selectedDate = Calendar.getInstance().apply {
+                set(selectedYear, selectedMonth, selectedDayOfMonth)
+            }
+            callback(dateFormat.format(selectedDate.time))
+        }, year, month, dayOfMonth)
+
+        datePickerDialog.setTitle(title)
+        datePickerDialog.show()
     }
 }
