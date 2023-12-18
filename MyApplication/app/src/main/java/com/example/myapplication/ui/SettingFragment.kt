@@ -1,12 +1,19 @@
 package com.example.myapplication.ui
 
+import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,10 +28,13 @@ import com.example.myapplication.SignatureEntity
 import com.example.myapplication.rest.ImageService
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
+
 
 class SettingFragment : Fragment() {
     private lateinit var dataList: List<SignatureEntity>
     private lateinit var imageView: ImageView
+    private lateinit var contentResolver: ContentResolver
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +53,7 @@ class SettingFragment : Fragment() {
         view.findViewById<Button>(R.id.btnGenerateImage).setOnClickListener {
             generateAndSaveImage(dataList)
         }
+        contentResolver = view.context.contentResolver
     }
 
     private fun generateAndSaveImage(dataList: List<SignatureEntity>) {
@@ -87,22 +98,68 @@ class SettingFragment : Fragment() {
         imageView.setImageBitmap(bitmap)
     }
 
+    @SuppressLint("Range")
     private fun saveImageToFile(bitmap: Bitmap) {
-        try {
-            val file = File(context?.externalCacheDir, "signature_image.png")
-            val outputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            displayImage(bitmap)
-            outputStream.flush()
-            outputStream.close()
-            // 이미지 저장 성공 메시지 또는 액션을 여기에 추가합니다.
-            Log.d("SettingFragment", "파일 저장 성공")
+        val imgService = ImageService()
+        val timestamp = System.currentTimeMillis()
+        //Tell the media scanner about the new file so that it is immediately available to the user.
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+        values.put(MediaStore.Images.Media.DATE_ADDED, timestamp)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.DATE_TAKEN, timestamp)
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/" + getString(R.string.app_name))
+            values.put(MediaStore.Images.Media.IS_PENDING, true)
+            val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            if (uri != null) {
+                try {
+                    val outputStream = contentResolver.openOutputStream(uri)
+                    if (outputStream != null) {
+                        try {
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                            outputStream.close()
+                        } catch (e: Exception) {
+                            Log.e("TAG", "saveBitmapImage: ", e)
+                        }
+                    }
+                    values.put(MediaStore.Images.Media.IS_PENDING, false)
+                    contentResolver.update(uri, values, null, null)
+                    val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
+                    if (cursor != null){
+                        cursor.moveToNext()
+                        val path = cursor.getString(cursor.getColumnIndex("_data"))
+                        cursor.close()
+                        imgService.apiCall(File(path))
+                    }
+                } catch (e: Exception) {
+                    Log.e("TAG", "saveBitmapImage: ", e)
+                }
+            }
+        } else {
+            val imageFileFolder = File(Environment.getExternalStorageDirectory().toString() + '/' + getString(R.string.app_name))
+            if (!imageFileFolder.exists()) {
+                imageFileFolder.mkdirs()
+            }
+            val mImageName = "$timestamp.png"
+            val imageFile = File(imageFileFolder, mImageName)
+            try {
+                val outputStream: OutputStream = FileOutputStream(imageFile)
+                try {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    outputStream.close()
+                } catch (e: Exception) {
+                    Log.e("TAG", "saveBitmapImage: ", e)
+                }
+                values.put(MediaStore.Images.Media.DATA, imageFile.absolutePath)
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
-            val imgService = ImageService()
-            imgService.apiCall(file)
-        } catch (e: Exception) {
-            // 에러 처리
-            Log.e("SettingFragment", e?.message.toString())
+                // 이미지 저장 성공 메시지 또는 액션을 여기에 추가합니다.
+                Log.d("SettingFragment", "파일 저장 성공")
+
+                imgService.apiCall(imageFile)
+            } catch (e: Exception) {
+                Log.e("TAG", "saveBitmapImage: ", e)
+            }
         }
     }
 }
