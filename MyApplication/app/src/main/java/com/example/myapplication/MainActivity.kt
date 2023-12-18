@@ -58,33 +58,30 @@ class MainActivity() : AppCompatActivity() {
             }
         })
 
-        val confirmButton: Button = findViewById(R.id.confirmButton)
-        confirmButton.setOnClickListener {
-            // 버튼 클릭 시 수행할 작업
-        }
+
 
         val managermodebutton: Button = findViewById(R.id.ManagerMode)
         managermodebutton.setOnClickListener {
-            showPasswordDialog()
+            startActivity(Intent(this, manager_page::class.java))
         }
     }
 
-    fun showPasswordDialog() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null)
-        val passwordEditText = dialogView.findViewById<EditText>(R.id.passwordEditText)
-
-        AlertDialog.Builder(this)
-            .setTitle("비밀번호 입력")
-            .setView(dialogView)
-            .setPositiveButton("확인") { dialog, which ->
-                val password = passwordEditText.text.toString()
-                if (password == "1234") {
-                    startActivity(Intent(this, manager_page::class.java))
-                } else {
-                    Toast.makeText(this, "잘못된 비밀번호입니다", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .setNegativeButton("취소", null)
-            .show()
-    }
+//    fun showPasswordDialog() {
+//        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null)
+//        val passwordEditText = dialogView.findViewById<EditText>(R.id.passwordEditText)
+//
+//        AlertDialog.Builder(this)
+//            .setTitle("비밀번호 입력")
+//            .setView(dialogView)
+//            .setPositiveButton("확인") { dialog, which ->
+//                val password = passwordEditText.text.toString()
+//                if (password == "1234") {
+//                    startActivity(Intent(this, manager_page::class.java))
+//                } else {
+//                    Toast.makeText(this, "잘못된 비밀번호입니다", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            .setNegativeButton("취소", null)
+//            .show()
+//    }
 }
