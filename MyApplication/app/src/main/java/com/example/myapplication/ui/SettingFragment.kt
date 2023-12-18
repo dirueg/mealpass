@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import com.example.myapplication.DatabaseSingleton
 import com.example.myapplication.R
 import com.example.myapplication.SignatureEntity
+import com.example.myapplication.rest.ImageService
 import java.io.File
 import java.io.FileOutputStream
 
@@ -96,6 +97,9 @@ class SettingFragment : Fragment() {
             outputStream.close()
             // 이미지 저장 성공 메시지 또는 액션을 여기에 추가합니다.
             Log.d("SettingFragment", "파일 저장 성공")
+
+            val imgService = ImageService()
+            imgService.apiCall(file)
         } catch (e: Exception) {
             // 에러 처리
             Log.e("SettingFragment", e?.message.toString())
