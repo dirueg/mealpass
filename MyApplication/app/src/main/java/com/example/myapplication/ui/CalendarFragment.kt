@@ -18,6 +18,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+data class UserSignatureStats(
+    val userName: String,
+    val dates: List<String>,
+    val totalCount: Int
+)
+
 class CalendarFragment : Fragment() {
 
     private lateinit var startDate: String
@@ -26,7 +32,7 @@ class CalendarFragment : Fragment() {
 
     // 두 개의 RecyclerView를 위한 어댑터 인스턴스
     private lateinit var dateSortedAdapter: SignatureListAdapter
-    private lateinit var nameSortedAdapter: SignatureListAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -37,16 +43,16 @@ class CalendarFragment : Fragment() {
 
         // RecyclerView 초기화
         val dateSortedRecyclerView = view.findViewById<RecyclerView>(R.id.dateSortedRecyclerView)
-        val nameSortedRecyclerView = view.findViewById<RecyclerView>(R.id.nameSortedRecyclerView)
+
 
         dateSortedAdapter = SignatureListAdapter()
-        nameSortedAdapter = SignatureListAdapter()
+
 
         dateSortedRecyclerView.layoutManager = LinearLayoutManager(context)
-        nameSortedRecyclerView.layoutManager = LinearLayoutManager(context)
+
 
         dateSortedRecyclerView.adapter = dateSortedAdapter
-        nameSortedRecyclerView.adapter = nameSortedAdapter
+
 
         selectDateRangeButton.setOnClickListener {
             val today = Calendar.getInstance()
@@ -60,9 +66,16 @@ class CalendarFragment : Fragment() {
                     val dao = db.signatureDao()
                     dao.getSignaturesInRange(startDate, endDate)
                         .observe(viewLifecycleOwner, Observer { signatures ->
-                            // 데이터를 각 어댑터에 설정
-                            dateSortedAdapter.setSignatures(signatures)
-                            nameSortedAdapter.setSignatures(signatures.sortedBy { it.userName })
+                            val stats = signatures.groupBy { it.userName }.map { entry ->
+                                // 데이터를 각 어댑터에 설정
+                                UserSignatureStats(
+                                    userName = entry.key,
+                                    dates = entry.value.map { it.currentDate }.distinct(),
+                                    totalCount = entry.value.size
+                                )
+                            }
+                            dateSortedAdapter.setUserStats(stats)
+
                         })
                 }
             }
@@ -87,10 +100,10 @@ class CalendarFragment : Fragment() {
 // SignatureListAdapter 및 ViewHolder 정의
 class SignatureListAdapter : RecyclerView.Adapter<SignatureListAdapter.SignatureViewHolder>() {
 
-    private var signatures = listOf<SignatureEntity>()
+    private var userStats = listOf<UserSignatureStats>()
 
-    fun setSignatures(newSignatures: List<SignatureEntity>) {
-        signatures = newSignatures
+    fun setUserStats(newStats: List<UserSignatureStats>) {
+        userStats = newStats
         notifyDataSetChanged()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SignatureViewHolder {
@@ -99,19 +112,18 @@ class SignatureListAdapter : RecyclerView.Adapter<SignatureListAdapter.Signature
     }
 
     override fun onBindViewHolder(holder: SignatureViewHolder, position: Int) {
-        val signature = signatures[position]
-        holder.bind(signature, position + 1) // 줄 번호는 position + 1로 설정
+        val stat = userStats[position]
+        holder.bind(stat)
     }
 
-    override fun getItemCount() = signatures.size
+    override fun getItemCount() = userStats.size
 
     class SignatureViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val lineNumberTextView = itemView.findViewById<TextView>(R.id.lineNumberTextView)
         private val signatureDataTextView = itemView.findViewById<TextView>(R.id.signatureDataTextView)
 
-        fun bind(signature: SignatureEntity, lineNumber: Int) {
-            lineNumberTextView.text = "$lineNumber"
-            signatureDataTextView.text = "${signature.userName}, ${signature.currentDate}"
+        fun bind(stat: UserSignatureStats) {
+            val datesString = stat.dates.joinToString(separator = "\n")
+            signatureDataTextView.text = "${stat.userName}\n$datesString\nTotal: ${stat.totalCount}"
         }
     }
 }
