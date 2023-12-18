@@ -15,13 +15,13 @@ import java.io.File
 
 internal interface Service {
     @Multipart
-    @POST("/upload?key=7f0c785ebd9095078bc2cb623a0b8b43")
+    @POST("upload?key=7f0c785ebd9095078bc2cb623a0b8b43")
     fun postImage(@Part image: MultipartBody.Part): Call<ResponseBody>
 }
 
 class ImageService() {
     fun apiCall(f: File){
-        val reqFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), f)
+        val reqFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), f)
         val body = MultipartBody.Part.createFormData("image", f.getName(), reqFile)
 
         val service: Service =
@@ -35,7 +35,7 @@ class ImageService() {
                 call: Call<ResponseBody>,
                 response: retrofit2.Response<ResponseBody>
             ) {
-                response.body()?.string()?.let { Log.d("ImageService", response.body()!!.string()) }
+                Log.d("ImageService", response.body()!!.string())
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
