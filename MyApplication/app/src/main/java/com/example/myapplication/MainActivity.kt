@@ -40,6 +40,8 @@ class MainActivity() : AppCompatActivity() {
                 val button = Button(this@MainActivity)
                 button.text = user.name
                 button.textSize = 32F
+                val drawableResource = R.drawable.name_button
+                button.setBackgroundResource(drawableResource)
                 button.setOnClickListener {
                     val intent = Intent(this@MainActivity, SignatureView.Popup::class.java)
                     intent.putExtra("userName", user.name)

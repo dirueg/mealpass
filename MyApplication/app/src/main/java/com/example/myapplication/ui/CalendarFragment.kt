@@ -69,6 +69,7 @@ class CalendarFragment : Fragment() {
                         .observe(viewLifecycleOwner, Observer { signatures ->
                             val stats = signatures.groupBy { it.userName }.map { entry ->
                                 // 데이터를 각 어댑터에 설정
+
                                 var userName = entry.key
                                 var dates = entry.value.map { it.currentDate }
                                 UserSignatureStats(
@@ -78,9 +79,12 @@ class CalendarFragment : Fragment() {
 
                                 )
                             }
-
+                            var totalListCount = 0
+                            for (userStats in stats) {
+                                totalListCount += userStats.totalCount
+                            }
                             nameSortedAdapter.setUserStats(stats)
-                            showDatePick.text = startDate+ " ~ " +endDate
+                            showDatePick.text = startDate+ " ~ " +endDate + "       조회된 전체 식사 횟수는 " + totalListCount+"회 입니다."
 
                         })
                 }

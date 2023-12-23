@@ -28,7 +28,7 @@
             android:id="@+id/calender_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="기간 통계" />
+            android:text="기간 별 조회" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/setting_button"
