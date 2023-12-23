@@ -31,50 +31,56 @@ class CalendarFragment : Fragment() {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     // 두 개의 RecyclerView를 위한 어댑터 인스턴스
-    private lateinit var dateSortedAdapter: SignatureListAdapter
+    private lateinit var nameSortedAdapter: SignatureListAdapter
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.calendar_fragment, container, false)
-
+        val showDatePick = view.findViewById<TextView>(R.id.showdatepick)
         val selectDateRangeButton = view.findViewById<Button>(R.id.selectDateRangeButton)
 
         // RecyclerView 초기화
-        val dateSortedRecyclerView = view.findViewById<RecyclerView>(R.id.dateSortedRecyclerView)
+        val nameSortedRecyclerView = view.findViewById<RecyclerView>(R.id.nameSortedRecyclerView)
 
 
-        dateSortedAdapter = SignatureListAdapter()
+        nameSortedAdapter = SignatureListAdapter()
 
 
-        dateSortedRecyclerView.layoutManager = LinearLayoutManager(context)
+        nameSortedRecyclerView.layoutManager = LinearLayoutManager(context)
 
 
-        dateSortedRecyclerView.adapter = dateSortedAdapter
+        nameSortedRecyclerView.adapter = nameSortedAdapter
 
 
         selectDateRangeButton.setOnClickListener {
             val today = Calendar.getInstance()
+
             showDatePicker(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), "시작 날짜 선택") { start ->
-                startDate = start
+                startDate = start + " 00:00"
 
                 showDatePicker(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), "종료 날짜 선택") { end ->
-                    endDate = end
+                    endDate = end + " 23:59"
 
                     val db = DatabaseSingleton.SignDB
                     val dao = db.signatureDao()
-                    dao.getSignaturesInRange(startDate, endDate)
+                    dao.getSignaturesSortedByName(startDate, endDate)
                         .observe(viewLifecycleOwner, Observer { signatures ->
                             val stats = signatures.groupBy { it.userName }.map { entry ->
                                 // 데이터를 각 어댑터에 설정
+                                var userName = entry.key
+                                var dates = entry.value.map { it.currentDate }
                                 UserSignatureStats(
-                                    userName = entry.key,
-                                    dates = entry.value.map { it.currentDate }.distinct(),
-                                    totalCount = entry.value.size
+                                    userName = userName,
+                                    dates = dates,
+                                    totalCount = dates.size
+
                                 )
                             }
-                            dateSortedAdapter.setUserStats(stats)
+
+                            nameSortedAdapter.setUserStats(stats)
+                            showDatePick.text = startDate+ " ~ " +endDate
 
                         })
                 }
@@ -119,11 +125,14 @@ class SignatureListAdapter : RecyclerView.Adapter<SignatureListAdapter.Signature
     override fun getItemCount() = userStats.size
 
     class SignatureViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val signatureDataTextView = itemView.findViewById<TextView>(R.id.signatureDataTextView)
+        private val userNameTextView = itemView.findViewById<TextView>(R.id.userNameTextView)
+        private val datesTextView = itemView.findViewById<TextView>(R.id.datesTextView)
+        private val totalCountTextView = itemView.findViewById<TextView>(R.id.totalCountTextView)
 
         fun bind(stat: UserSignatureStats) {
-            val datesString = stat.dates.joinToString(separator = "\n")
-            signatureDataTextView.text = "${stat.userName}\n$datesString\nTotal: ${stat.totalCount}"
+            userNameTextView.text = stat.userName
+            datesTextView.text = stat.dates.joinToString(separator = "\n")+"\n"
+            totalCountTextView.text = "총 합: ${stat.totalCount}"
         }
     }
 }
