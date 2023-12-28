@@ -2,14 +2,18 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import com.example.myapplication.rest.ImageService
+import com.google.gson.JsonObject
+import retrofit2.Call
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -19,6 +23,26 @@ fun saveImageToFile(view: View, bitmap: Bitmap) {
     val imgService = ImageService()
     val timestamp = System.currentTimeMillis()
     val contentResolver = view.context.contentResolver
+    val callback = object : retrofit2.Callback<JsonObject> {
+        override fun onResponse(
+            call: Call<JsonObject>,
+            response: retrofit2.Response<JsonObject>
+        ) {
+            val responseBody = response.body()!!
+            Log.d("ImageService", responseBody.toString())
+            val url = responseBody["data"].asJsonObject["url"].asString
+            Log.d("ImageService", url)
+            val urlIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://zxing.org/w/chart?cht=qr&chs=350x350&chld=L&choe=UTF-8&chl="+url)
+            )
+            view.context.startActivity(urlIntent)
+        }
+
+        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+            call.let { Log.e("ImageService", t.message.toString()) }
+        }
+    }
     //Tell the media scanner about the new file so that it is immediately available to the user.
     val values = ContentValues()
     values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
@@ -49,7 +73,7 @@ fun saveImageToFile(view: View, bitmap: Bitmap) {
                     cursor.moveToNext()
                     val path = cursor.getString(cursor.getColumnIndex("_data"))
                     cursor.close()
-                    imgService.apiCall(File(path))
+                    imgService.apiCall(File(path), callback)
                 }
             } catch (e: Exception) {
                 Log.e("TAG", "saveBitmapImage: ", e)
@@ -80,7 +104,7 @@ fun saveImageToFile(view: View, bitmap: Bitmap) {
             // 이미지 저장 성공 메시지 또는 액션을 여기에 추가합니다.
             Log.d("SettingFragment", "파일 저장 성공")
 
-            imgService.apiCall(imageFile)
+            imgService.apiCall(imageFile, callback)
         } catch (e: Exception) {
             Log.e("TAG", "saveBitmapImage: ", e)
         }
