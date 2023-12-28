@@ -1,6 +1,8 @@
 package com.example.myapplication.ui
 
 import android.app.DatePickerDialog
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.DatabaseSingleton
 import com.example.myapplication.R
-import com.example.myapplication.SignatureEntity
+import com.example.myapplication.saveImageToFile
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -86,6 +88,21 @@ class CalendarFragment : Fragment() {
                             nameSortedAdapter.setUserStats(stats)
                             showDatePick.text = startDate+ " ~ " +endDate + "       조회된 전체 식사 횟수는 " + totalListCount+"회 입니다."
 
+                            var thisView = this.requireView()
+                            thisView.post{
+                                if (thisView.measuredWidth <= 0 || thisView.measuredHeight <= 0) {
+                                    //Err
+                                }
+
+                                val bitmap = Bitmap.createBitmap(
+                                    thisView.measuredWidth,
+                                    thisView.measuredHeight,
+                                    Bitmap.Config.ARGB_8888
+                                )
+                                val canvas = Canvas(bitmap)
+                                thisView.draw(canvas)
+                                saveImageToFile(thisView, bitmap)
+                            }
                         })
                 }
             }
