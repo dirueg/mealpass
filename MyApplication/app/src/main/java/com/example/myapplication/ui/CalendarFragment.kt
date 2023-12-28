@@ -1,5 +1,6 @@
 package com.example.myapplication.ui
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,6 +21,7 @@ import com.example.myapplication.saveImageToFile
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+
 
 data class UserSignatureStats(
     val userName: String,
@@ -94,14 +97,27 @@ class CalendarFragment : Fragment() {
                                     //Err
                                 }
 
-                                val bitmap = Bitmap.createBitmap(
-                                    thisView.measuredWidth,
-                                    thisView.measuredHeight,
+                                nameSortedRecyclerView.measure(
+                                    View.MeasureSpec.makeMeasureSpec(
+                                        nameSortedRecyclerView.getWidth(),
+                                        View.MeasureSpec.EXACTLY
+                                    ),
+                                    View.MeasureSpec.makeMeasureSpec(
+                                        0,
+                                        View.MeasureSpec.UNSPECIFIED
+                                    )
+                                )
+
+                                val bm = Bitmap.createBitmap(
+                                    nameSortedRecyclerView.width,
+                                    nameSortedRecyclerView.measuredHeight,
                                     Bitmap.Config.ARGB_8888
                                 )
-                                val canvas = Canvas(bitmap)
-                                thisView.draw(canvas)
-                                saveImageToFile(thisView, bitmap)
+                                nameSortedRecyclerView.draw(Canvas(bm))
+                                val im = ImageView(activity)
+                                im.setImageBitmap(bm)
+                                AlertDialog.Builder(activity).setView(im).show()
+                                saveImageToFile(nameSortedRecyclerView, bm)
                             }
                         })
                 }
