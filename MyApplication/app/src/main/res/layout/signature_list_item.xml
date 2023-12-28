@@ -1,19 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:stretchColumns="*"
+    android:background="@drawable/table_border"
     android:padding="8dp">
 
-    <TextView
-        android:id="@+id/lineNumberTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp" />
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/signatureDataTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-</LinearLayout>
+        <!-- 사용자 이름 -->
+
+        <!-- 날짜 목록 -->
+
+        <!-- 총 횟수 -->
+
+        <TextView
+            android:id="@+id/userNameTextView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="이름"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/datesTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-14dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="4"
+            android:text="1999-99-99 23:59\n123131\n12 3213\n"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/totalCountTextView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="총 합"
+            android:textSize="24sp"
+            android:textStyle="italic" />
+    </TableRow>
+</TableLayout>

@@ -48,6 +48,7 @@ class manager_page : AppCompatActivity() {
         // 이건 ui select observe 꼼수인데, 강제로 다른 탭을 선택했다가 0번 탭을 선택하게 하면
         // 0번 탭 선택한걸 그제서야 인식해서 제대로 탭이 선택된걸로 인식, onTabSelected가 실행됨
         // 결론은 이제 관리자모드 드가면 바로 직원 리스트 탭으로 넘어가고 있음
+        // 짱이당
         tabLayout.getTabAt(1)?.select()
         tabLayout.getTabAt(0)?.select()
     }

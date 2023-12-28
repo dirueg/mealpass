@@ -18,6 +18,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+data class UserSignatureStats(
+    val userName: String,
+    val dates: List<String>,
+    val totalCount: Int
+)
+
 class CalendarFragment : Fragment() {
 
     private lateinit var startDate: String
@@ -25,44 +31,61 @@ class CalendarFragment : Fragment() {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     // 두 개의 RecyclerView를 위한 어댑터 인스턴스
-    private lateinit var dateSortedAdapter: SignatureListAdapter
     private lateinit var nameSortedAdapter: SignatureListAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.calendar_fragment, container, false)
-
+        val showDatePick = view.findViewById<TextView>(R.id.showdatepick)
         val selectDateRangeButton = view.findViewById<Button>(R.id.selectDateRangeButton)
 
         // RecyclerView 초기화
-        val dateSortedRecyclerView = view.findViewById<RecyclerView>(R.id.dateSortedRecyclerView)
         val nameSortedRecyclerView = view.findViewById<RecyclerView>(R.id.nameSortedRecyclerView)
 
-        dateSortedAdapter = SignatureListAdapter()
+
         nameSortedAdapter = SignatureListAdapter()
 
-        dateSortedRecyclerView.layoutManager = LinearLayoutManager(context)
+
         nameSortedRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        dateSortedRecyclerView.adapter = dateSortedAdapter
+
         nameSortedRecyclerView.adapter = nameSortedAdapter
+
 
         selectDateRangeButton.setOnClickListener {
             val today = Calendar.getInstance()
+
             showDatePicker(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), "시작 날짜 선택") { start ->
-                startDate = start
+                startDate = start + " 00:00"
 
                 showDatePicker(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), "종료 날짜 선택") { end ->
-                    endDate = end
+                    endDate = end + " 23:59"
 
                     val db = DatabaseSingleton.SignDB
                     val dao = db.signatureDao()
-                    dao.getSignaturesInRange(startDate, endDate)
+                    dao.getSignaturesSortedByName(startDate, endDate)
                         .observe(viewLifecycleOwner, Observer { signatures ->
-                            // 데이터를 각 어댑터에 설정
-                            dateSortedAdapter.setSignatures(signatures)
-                            nameSortedAdapter.setSignatures(signatures.sortedBy { it.userName })
+                            val stats = signatures.groupBy { it.userName }.map { entry ->
+                                // 데이터를 각 어댑터에 설정
+
+                                var userName = entry.key
+                                var dates = entry.value.map { it.currentDate }
+                                UserSignatureStats(
+                                    userName = userName,
+                                    dates = dates,
+                                    totalCount = dates.size
+
+                                )
+                            }
+                            var totalListCount = 0
+                            for (userStats in stats) {
+                                totalListCount += userStats.totalCount
+                            }
+                            nameSortedAdapter.setUserStats(stats)
+                            showDatePick.text = startDate+ " ~ " +endDate + "       조회된 전체 식사 횟수는 " + totalListCount+"회 입니다."
+
                         })
                 }
             }
@@ -87,10 +110,10 @@ class CalendarFragment : Fragment() {
 // SignatureListAdapter 및 ViewHolder 정의
 class SignatureListAdapter : RecyclerView.Adapter<SignatureListAdapter.SignatureViewHolder>() {
 
-    private var signatures = listOf<SignatureEntity>()
+    private var userStats = listOf<UserSignatureStats>()
 
-    fun setSignatures(newSignatures: List<SignatureEntity>) {
-        signatures = newSignatures
+    fun setUserStats(newStats: List<UserSignatureStats>) {
+        userStats = newStats
         notifyDataSetChanged()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SignatureViewHolder {
@@ -99,19 +122,21 @@ class SignatureListAdapter : RecyclerView.Adapter<SignatureListAdapter.Signature
     }
 
     override fun onBindViewHolder(holder: SignatureViewHolder, position: Int) {
-        val signature = signatures[position]
-        holder.bind(signature, position + 1) // 줄 번호는 position + 1로 설정
+        val stat = userStats[position]
+        holder.bind(stat)
     }
 
-    override fun getItemCount() = signatures.size
+    override fun getItemCount() = userStats.size
 
     class SignatureViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val lineNumberTextView = itemView.findViewById<TextView>(R.id.lineNumberTextView)
-        private val signatureDataTextView = itemView.findViewById<TextView>(R.id.signatureDataTextView)
+        private val userNameTextView = itemView.findViewById<TextView>(R.id.userNameTextView)
+        private val datesTextView = itemView.findViewById<TextView>(R.id.datesTextView)
+        private val totalCountTextView = itemView.findViewById<TextView>(R.id.totalCountTextView)
 
-        fun bind(signature: SignatureEntity, lineNumber: Int) {
-            lineNumberTextView.text = "$lineNumber"
-            signatureDataTextView.text = "${signature.userName}, ${signature.currentDate}"
+        fun bind(stat: UserSignatureStats) {
+            userNameTextView.text = stat.userName
+            datesTextView.text = stat.dates.joinToString(separator = "\n")+"\n"
+            totalCountTextView.text = "총 합: ${stat.totalCount}"
         }
     }
 }

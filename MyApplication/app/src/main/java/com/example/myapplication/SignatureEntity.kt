@@ -15,7 +15,7 @@ data class User(
 data class SignatureEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val userName: String,
-    val currentDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
+    val currentDate: String = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()),
     val signature: ByteArray, // Bitmap을 ByteArray로 저장
 ) {
     override fun equals(other: Any?): Boolean {

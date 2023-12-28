@@ -6,17 +6,32 @@
     android:layout_marginTop="55dp"
     android:padding="16dp">
 
-    <!-- 날짜 범위 선택 버튼 -->
-    <Button
-        android:id="@+id/selectDateRangeButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="날짜 범위 선택" />
+        android:orientation="horizontal">
 
-    <!-- 가로 방향으로 두 개의 RecyclerView 배치 -->
+        <TextView
+            android:id="@+id/showdatepick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="24dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/selectDateRangeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:text="기간 선택" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="-10dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -27,37 +42,14 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="날짜 순 정렬"
-                android:layout_marginBottom="8dp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/dateSortedRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-        </LinearLayout>
-
-        <!-- userName 순으로 정렬된 데이터를 표시할 RecyclerView -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="이름 순 정렬"
-                android:layout_marginBottom="8dp"/>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/nameSortedRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
         </LinearLayout>
+
+        <!-- userName 순으로 정렬된 데이터를 표시할 RecyclerView -->
+
     </LinearLayout>
 </LinearLayout>
