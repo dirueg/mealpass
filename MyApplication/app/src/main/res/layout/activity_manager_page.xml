@@ -34,7 +34,7 @@
             android:id="@+id/setting_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="그 외 설정?" />
+            android:text="직원별 조회 및 수정" />
 
     </com.google.android.material.tabs.TabLayout>
     <FrameLayout
