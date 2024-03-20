@@ -17,9 +17,11 @@ import retrofit2.Call
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
+import kotlin.math.ceil
+import kotlin.math.max
 
 @SuppressLint("Range")
-fun saveImageToFile(view: View, bitmap: Bitmap) {
+fun saveImageToFile(view: View, bitmap: Bitmap, titleText: String) {
     val imgService = ImageService()
     val timestamp = System.currentTimeMillis()
     val contentResolver = view.context.contentResolver
@@ -73,12 +75,15 @@ fun saveImageToFile(view: View, bitmap: Bitmap) {
                     cursor.moveToNext()
                     val path = cursor.getString(cursor.getColumnIndex("_data"))
                     cursor.close()
+
                     imgService.apiCall(File(path), callback)
+                    saveBitmapToPdf(getBitmaps(bitmap, 1500), contentResolver, titleText)
                 }
             } catch (e: Exception) {
                 Log.e("TAG", "saveBitmapImage: ", e)
             }
         }
+        Log.d("BitmapHelper", "파일 저장이랑 뭐 한듯ㄴ")
     } else {
         val imageFileFolder = File(
             Environment.getExternalStorageDirectory().toString() + '/' + view.context.getString(
@@ -109,4 +114,35 @@ fun saveImageToFile(view: View, bitmap: Bitmap) {
             Log.e("TAG", "saveBitmapImage: ", e)
         }
     }
+}
+
+fun getBitmaps(bitmap: Bitmap, maxSize: Int): List<Bitmap> {
+    val width = bitmap.width
+    val height = bitmap.height
+
+    val nChunks = ceil(max(width, height) / maxSize.toDouble())
+    val bitmaps: MutableList<Bitmap> = ArrayList()
+
+    var start = 0
+    for (i in 1..nChunks.toInt()) {
+        bitmaps.add(
+            if (width >= height){
+                var croppedWidth = maxSize
+                if(start + croppedWidth > bitmap.width){
+                    croppedWidth = bitmap.width - start
+                }
+                Bitmap.createBitmap(bitmap, start, 0, croppedWidth, height)
+            }
+            else{
+                var croppedHeight = maxSize
+                if(start + croppedHeight > bitmap.height){
+                    croppedHeight = bitmap.height - start
+                }
+                Bitmap.createBitmap(bitmap, 0, start, width, croppedHeight)
+            }
+        )
+        start += maxSize
+    }
+
+    return bitmaps
 }

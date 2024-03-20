@@ -117,7 +117,9 @@ class CalendarFragment : Fragment() {
                                 val im = ImageView(activity)
                                 im.setImageBitmap(bm)
                                 AlertDialog.Builder(activity).setView(im).show()
-                                saveImageToFile(nameSortedRecyclerView, bm)
+                                saveImageToFile(nameSortedRecyclerView, bm,
+                                    "$startDate ~ ${endDate} \n조회된 전체 식사 횟수는 ${totalListCount}회 입니다.\n조회된 인원은 ${stats.count()}명 입니다."
+                                )
                             }
                         })
                 }
