@@ -13,10 +13,10 @@ import java.io.FileOutputStream
 
 fun saveBitmapToPdf(bitmap: List<Bitmap>, contentResolver: ContentResolver, titleText: String){
     val doc = PdfDocument()
-    val firstPageInfo = PdfDocument.PageInfo.Builder(bitmap.first().width, bitmap.first().height, 1).create()
+    val firstPageInfo = PdfDocument.PageInfo.Builder(bitmap.first().width, 1500, 1).create()
     val firstPage = doc.startPage(firstPageInfo)
     val title = Paint()
-    title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+    title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
 
     // below line is used for setting text size
     // which we will be displaying in our PDF file.
@@ -32,20 +32,26 @@ fun saveBitmapToPdf(bitmap: List<Bitmap>, contentResolver: ContentResolver, titl
 
     doc.finishPage(firstPage)
 
-    bitmap.forEachIndexed{index, value ->
-        val pageInfo = PdfDocument.PageInfo.Builder(value.width, value.height, index + 2).create()
-        /**Make First Page For Summary**/
-        val page = doc.startPage(pageInfo)
-        /**Render Page Fro First Page**/
+    var pageNumber = 2
+    var pageInfo = PdfDocument.PageInfo.Builder(bitmap.first().width, 1500, pageNumber).create()
+    var page = doc.startPage(pageInfo)
+    var topOffset = 0f
+    bitmap.forEach{value ->
+        if(pageInfo.pageHeight - topOffset < value.height){
+            doc.finishPage(page)
+            pageInfo = PdfDocument.PageInfo.Builder(bitmap.first().width, 1500, ++pageNumber).create()
+            page = doc.startPage(pageInfo)
+            topOffset = 0f
+        }
         page.canvas.drawBitmap(
             value,
             0f,
-            0f,
+            topOffset,
             null
         )
-
-        doc.finishPage(page)
+        topOffset += value.height
     }
+    doc.finishPage(page)
 
     val values = ContentValues()
     values.put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis().toString() + ".pdf")

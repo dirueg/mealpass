@@ -21,7 +21,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 
 @SuppressLint("Range")
-fun saveImageToFile(view: View, bitmap: Bitmap, titleText: String) {
+fun saveImageToFile(view: View, bitmap: Bitmap) {
     val imgService = ImageService()
     val timestamp = System.currentTimeMillis()
     val contentResolver = view.context.contentResolver
@@ -77,7 +77,6 @@ fun saveImageToFile(view: View, bitmap: Bitmap, titleText: String) {
                     cursor.close()
 
                     imgService.apiCall(File(path), callback)
-                    saveBitmapToPdf(getBitmaps(bitmap, 1500), contentResolver, titleText)
                 }
             } catch (e: Exception) {
                 Log.e("TAG", "saveBitmapImage: ", e)
