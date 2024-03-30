@@ -2,6 +2,7 @@ package com.example.myapplication.ui
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
@@ -123,11 +124,15 @@ class CalendarFragment : Fragment() {
                                 im.setImageBitmap(bm)
                                 AlertDialog.Builder(activity).setView(im).show()
                                 saveImageToFile(nameSortedRecyclerView, bm)
-                                saveBitmapToPdf(
+                                val pdfUri = saveBitmapToPdf(
                                     children,
                                     this.requireContext().contentResolver,
                                     "$startDate ~ $endDate \n조회된 전체 식사 횟수는 ${totalListCount}회 입니다.\n조회된 인원은 ${stats.count()}명 입니다."
                                 )
+                                val intent = Intent(Intent.ACTION_SEND)
+                                intent.type = "application/*"
+                                intent.putExtra(Intent.EXTRA_STREAM, pdfUri)
+                                startActivity(Intent.createChooser(intent, "pdf 공유"))
                             }
                         }
                 }

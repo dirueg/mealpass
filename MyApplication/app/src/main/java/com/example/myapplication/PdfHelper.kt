@@ -7,11 +7,12 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import java.io.FileOutputStream
 
-fun saveBitmapToPdf(bitmap: List<Bitmap>, contentResolver: ContentResolver, titleText: String){
+fun saveBitmapToPdf(bitmap: List<Bitmap>, contentResolver: ContentResolver, titleText: String): Uri? {
     val doc = PdfDocument()
     val firstPageInfo = PdfDocument.PageInfo.Builder(bitmap.first().width, 1500, 1).create()
     val firstPage = doc.startPage(firstPageInfo)
@@ -57,9 +58,6 @@ fun saveBitmapToPdf(bitmap: List<Bitmap>, contentResolver: ContentResolver, titl
     values.put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis().toString() + ".pdf")
     values.put(MediaStore.MediaColumns.MIME_TYPE, "files/pdf")
     values.put(MediaStore.MediaColumns.RELATIVE_PATH, "Documents")
-    values.put(MediaStore.Video.Media.TITLE, "SomeName")
-    values.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-    values.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis())
     values.put(MediaStore.Files.FileColumns.IS_PENDING, true)
     MediaStore.Files.getContentUri("external")
     val uri = contentResolver.insert(MediaStore.Files.getContentUri("external"), values);
@@ -77,4 +75,6 @@ fun saveBitmapToPdf(bitmap: List<Bitmap>, contentResolver: ContentResolver, titl
         values.put(MediaStore.Files.FileColumns.IS_PENDING, false)
         contentResolver.update(uri, values, null, null)
     }
+
+    return uri
 }
